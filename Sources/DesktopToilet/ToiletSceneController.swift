@@ -46,7 +46,7 @@ final class ToiletSCNView: SCNView {
             onHandlePress?()
             return
         }
-        window?.performWindowDrag(with: event)
+        window?.performDrag(with: event)
     }
 
     override func mouseUp(with event: NSEvent) {

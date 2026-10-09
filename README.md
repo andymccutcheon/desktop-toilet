@@ -133,7 +133,7 @@ These are the bits I am least sure will compile or look right on a Command Line 
 - `SCNMaterial` `metalness` / `roughness` `contents` as `NSNumber`. Some SDKs want a `CGFloat` or a 1×1 image.
 - `scene.lightingEnvironment.contents` as a generated `NSImage`. If IBL is ignored, the three directional lights still light the porcelain.
 - `SCNGeometrySource(vertices:)` / `(normals:)` / `(textureCoordinates:)` and `SCNGeometryElement(indices:primitiveType:)` with `[UInt32]`.
-- `NSWindow.performWindowDrag(with:)` for dragging the toilet. The older SwiftUI translation-drag is gone; window helpers still take `NSWindow`.
+- `NSWindow.performDrag(with:)` for dragging the toilet. The older SwiftUI translation-drag is gone; window helpers still take `NSWindow`.
 - `SCNHitTestOption.categoryBitMask` / `searchMode` boxed as `NSNumber`.
 - `SCNCamera.wantsExposureAdaptation` and `SCNLight.intensity` (both 10.12+; remove if the SDK you have is older than advertised).
 - `NSImage(size:flipped:drawingHandler:)` for water, shadow, and the DT decal.

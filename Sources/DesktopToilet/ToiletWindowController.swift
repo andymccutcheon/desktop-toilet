@@ -1,15 +1,17 @@
 #if os(macOS)
 import AppKit
+import Combine
 import SwiftUI
 
 final class ToiletWindowController: NSWindowController, NSWindowDelegate {
     private let session: ToiletSession
-    private let contentSize = NSSize(width: 236, height: 348)
+    private var cancellables = Set<AnyCancellable>()
 
     init(session: ToiletSession) {
         self.session = session
+        let size = SettingsStore.shared.contentSize
         let panel = ToiletPanel(
-            contentRect: NSRect(origin: .zero, size: contentSize),
+            contentRect: NSRect(origin: .zero, size: size),
             styleMask: [.borderless, .nonactivatingPanel],
             backing: .buffered,
             defer: false
@@ -22,6 +24,13 @@ final class ToiletWindowController: NSWindowController, NSWindowDelegate {
             name: .resetToiletPosition,
             object: nil
         )
+        SettingsStore.shared.$toiletScale
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.applyCurrentSize(animate: true)
+            }
+            .store(in: &cancellables)
     }
 
     @objc private func handleResetPosition() {
@@ -67,18 +76,21 @@ final class ToiletWindowController: NSWindowController, NSWindowDelegate {
         panel.level = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.desktopIconWindow)) + 8)
         panel.animationBehavior = .utilityWindow
 
+        let size = SettingsStore.shared.contentSize
         let root = ToiletView()
             .environmentObject(session)
-            .frame(width: contentSize.width, height: contentSize.height)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
 
         let hosting = NSHostingView(rootView: root)
-        hosting.frame = NSRect(origin: .zero, size: contentSize)
+        hosting.frame = NSRect(origin: .zero, size: size)
         hosting.autoresizingMask = [.width, .height]
+        hosting.wantsLayer = true
         if let layer = hosting.layer {
+            layer.isOpaque = false
             layer.backgroundColor = NSColor.clear.cgColor
         }
         panel.contentView = hosting
-        panel.setContentSize(contentSize)
+        panel.setContentSize(size)
 
         panel.onDropURLs = { [weak session] urls in
             session?.drop(urls: urls)
@@ -92,17 +104,38 @@ final class ToiletWindowController: NSWindowController, NSWindowDelegate {
     }
 
     private func restorePosition(_ panel: NSWindow) {
+        let size = SettingsStore.shared.contentSize
         if let saved = SettingsStore.shared.savedFrame(), frameIsOnScreen(saved) {
-            panel.setFrame(saved, display: false)
+            var frame = saved
+            if abs(frame.width - size.width) > 8 || abs(frame.height - size.height) > 8 {
+                let bottomCenter = NSPoint(x: frame.midX, y: frame.minY)
+                frame.size = size
+                frame.origin.x = bottomCenter.x - size.width / 2
+                frame.origin.y = bottomCenter.y
+            }
+            panel.setFrame(frame, display: false)
         } else {
             placeDefault(panel)
         }
     }
 
+    private func applyCurrentSize(animate: Bool) {
+        guard let panel = window else { return }
+        let size = SettingsStore.shared.contentSize
+        var frame = panel.frame
+        let bottomCenterX = frame.midX
+        let bottomY = frame.minY
+        frame.size = size
+        frame.origin.x = bottomCenterX - size.width / 2
+        frame.origin.y = bottomY
+        panel.setFrame(frame, display: true, animate: animate)
+        SettingsStore.shared.saveFrame(panel.frame)
+    }
+
     private func placeDefault(_ panel: NSWindow) {
         guard let screen = NSScreen.main else { return }
         let visible = screen.visibleFrame
-        let size = panel.frame.size
+        let size = SettingsStore.shared.contentSize
         let origin = NSPoint(
             x: visible.midX - size.width / 2,
             y: visible.minY + 96

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>Desktop Toilet</string>
+	<key>CFBundleExecutable</key>
+	<string>DesktopToilet</string>
+	<key>CFBundleIdentifier</key>
+	<string>app.desktoptoilet.DesktopToilet</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Desktop Toilet</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>13.0</string>
+	<key>LSUIElement</key>
+	<true/>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSSupportsAutomaticTermination</key>
+	<false/>
+	<key>NSSupportsSuddenTermination</key>
+	<false/>
+	<key>NSDesktopFolderUsageDescription</key>
+	<string>Desktop Toilet only touches files or folders you drop into the bowl.</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>Desktop Toilet only touches files or folders you drop into the bowl.</string>
+	<key>NSDownloadsFolderUsageDescription</key>
+	<string>Desktop Toilet only touches files or folders you drop into the bowl.</string>
+</dict>
+</plist>

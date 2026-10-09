@@ -25,7 +25,11 @@ targets.append(
     .executableTarget(
         name: "DesktopToilet",
         dependencies: ["ToiletCore"],
-        path: "Sources/DesktopToilet"
+        path: "Sources/DesktopToilet",
+        linkerSettings: [
+            .linkedFramework("SceneKit"),
+            .linkedFramework("QuartzCore"),
+        ]
     )
 )
 #endif

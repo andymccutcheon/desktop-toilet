@@ -52,7 +52,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 rootView: SettingsView(store: SettingsStore.shared, session: ToiletSession.shared)
             )
             let window = NSPanel(
-                contentRect: NSRect(x: 0, y: 0, width: 440, height: 500),
+                contentRect: NSRect(x: 0, y: 0, width: 440, height: 560),
                 styleMask: [.titled, .closable],
                 backing: .buffered,
                 defer: false

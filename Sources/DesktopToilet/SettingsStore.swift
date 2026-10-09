@@ -2,6 +2,7 @@
 import AppKit
 import Combine
 import Foundation
+import ToiletCore
 
 final class SettingsStore: ObservableObject {
     static let shared = SettingsStore()
@@ -11,6 +12,8 @@ final class SettingsStore: ObservableObject {
         static let confirmAfterItems = "confirmAfterItems"
         static let soundsEnabled = "soundsEnabled"
         static let windowFrame = "toiletFrame"
+        static let toiletScale = "toiletScale"
+        static let handleFinish = "handleFinish"
     }
 
     @Published var permanentDelete: Bool {
@@ -23,6 +26,18 @@ final class SettingsStore: ObservableObject {
 
     @Published var soundsEnabled: Bool {
         didSet { UserDefaults.standard.set(soundsEnabled, forKey: Keys.soundsEnabled) }
+    }
+
+    @Published var toiletScale: ToiletDisplaySize {
+        didSet { UserDefaults.standard.set(toiletScale.rawValue, forKey: Keys.toiletScale) }
+    }
+
+    @Published var handleFinish: ToiletHandleFinish {
+        didSet { UserDefaults.standard.set(handleFinish.rawValue, forKey: Keys.handleFinish) }
+    }
+
+    var contentSize: NSSize {
+        NSSize(width: toiletScale.width, height: toiletScale.height)
     }
 
     let byteConfirmationThreshold: UInt64 = 1_000_000_000
@@ -39,6 +54,18 @@ final class SettingsStore: ObservableObject {
             soundsEnabled = true
         } else {
             soundsEnabled = defaults.bool(forKey: Keys.soundsEnabled)
+        }
+        if let raw = defaults.string(forKey: Keys.toiletScale),
+           let scale = ToiletDisplaySize(rawValue: raw) {
+            toiletScale = scale
+        } else {
+            toiletScale = .regular
+        }
+        if let raw = defaults.string(forKey: Keys.handleFinish),
+           let finish = ToiletHandleFinish(rawValue: raw) {
+            handleFinish = finish
+        } else {
+            handleFinish = .gold
         }
     }
 

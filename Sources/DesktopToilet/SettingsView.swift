@@ -13,7 +13,7 @@ struct SettingsView: View {
         VStack(alignment: .leading, spacing: 18) {
             Text("Desktop Toilet")
                 .font(.system(size: 22, weight: .bold, design: .rounded))
-            Text("A porcelain drop target for files you want out of sight. Default flush goes to Trash.")
+            Text("A 3D porcelain drop target for files you want out of sight. Default flush goes to Trash.")
                 .font(.system(size: 13))
                 .foregroundColor(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -39,6 +39,19 @@ struct SettingsView: View {
             GroupBox("Desktop") {
                 VStack(alignment: .leading, spacing: 12) {
                     Toggle("Play plop and flush sounds", isOn: $store.soundsEnabled)
+                    Picker("Toilet size", selection: $store.toiletScale) {
+                        Text("Compact").tag(ToiletDisplaySize.compact)
+                        Text("Regular").tag(ToiletDisplaySize.regular)
+                        Text("Large").tag(ToiletDisplaySize.large)
+                    }
+                    Picker("Handle", selection: $store.handleFinish) {
+                        Text("Gold").tag(ToiletHandleFinish.gold)
+                        Text("Chrome").tag(ToiletHandleFinish.chrome)
+                    }
+                    Text("Regular is about the same footprint as the old flat toilet. The 3D scene stays framed; only the window grows.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                     Toggle("Launch at login", isOn: loginBinding)
                     if let loginError {
                         Text(loginError)

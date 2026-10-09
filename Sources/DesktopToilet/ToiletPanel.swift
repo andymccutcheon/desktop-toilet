@@ -1,7 +1,10 @@
 #if os(macOS)
 import AppKit
 
-final class ToiletPanel: NSPanel {
+// NSWindow does not expose NSDraggingDestination methods to Swift as overridable,
+// so the panel declares the conformance itself (AppKit still routes drags here
+// because the window registers for .fileURL).
+final class ToiletPanel: NSPanel, NSDraggingDestination {
     var onDropURLs: (([URL]) -> Void)?
     var onDropTargeted: ((Bool) -> Void)?
 
@@ -28,29 +31,29 @@ final class ToiletPanel: NSPanel {
         super.mouseDown(with: event)
     }
 
-    override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
+    @objc func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
         guard hasFileURLs(sender) else { return [] }
         onDropTargeted?(true)
         return .copy
     }
 
-    override func draggingUpdated(_ sender: NSDraggingInfo) -> NSDragOperation {
+    @objc func draggingUpdated(_ sender: NSDraggingInfo) -> NSDragOperation {
         hasFileURLs(sender) ? .copy : []
     }
 
-    override func draggingExited(_ sender: NSDraggingInfo?) {
+    @objc func draggingExited(_ sender: NSDraggingInfo?) {
         onDropTargeted?(false)
     }
 
-    override func draggingEnded(_ sender: NSDraggingInfo) {
+    @objc func draggingEnded(_ sender: NSDraggingInfo) {
         onDropTargeted?(false)
     }
 
-    override func prepareForDragOperation(_ sender: NSDraggingInfo) -> Bool {
+    @objc func prepareForDragOperation(_ sender: NSDraggingInfo) -> Bool {
         hasFileURLs(sender)
     }
 
-    override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
+    @objc func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
         onDropTargeted?(false)
         let urls = readFileURLs(from: sender)
         guard !urls.isEmpty else { return false }

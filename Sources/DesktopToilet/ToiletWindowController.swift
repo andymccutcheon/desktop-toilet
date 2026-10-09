@@ -91,7 +91,7 @@ final class ToiletWindowController: NSWindowController, NSWindowDelegate {
         panel.orderFrontRegardless()
     }
 
-    private func restorePosition(_ panel: NSPanel) {
+    private func restorePosition(_ panel: NSWindow) {
         if let saved = SettingsStore.shared.savedFrame(), frameIsOnScreen(saved) {
             panel.setFrame(saved, display: false)
         } else {
@@ -99,7 +99,7 @@ final class ToiletWindowController: NSWindowController, NSWindowDelegate {
         }
     }
 
-    private func placeDefault(_ panel: NSPanel) {
+    private func placeDefault(_ panel: NSWindow) {
         guard let screen = NSScreen.main else { return }
         let visible = screen.visibleFrame
         let size = panel.frame.size
